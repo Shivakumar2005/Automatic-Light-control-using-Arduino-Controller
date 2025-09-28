@@ -64,9 +64,67 @@ LDR Features of LDR are as follows:
 
 ## PROGRAM:
 
+int ldrPin     = A0;   // LDR sensor input
+int pirPin     = 2;    // PIR sensor input
+int lightPin   = 13;   // Relay or LED output
+
+int modeSwitch = 3;    // Switch-1: Manual / Auto
+int manualSwitch = 4;  // Switch-2: Manual ON/OFF
+
+void setup() {
+  pinMode(lightPin, OUTPUT);
+  pinMode(pirPin, INPUT);
+  
+  pinMode(modeSwitch, INPUT_PULLUP);   // Switch-1: ON=LOW (manual), OFF=HIGH (auto)
+  pinMode(manualSwitch, INPUT_PULLUP); // Switch-2 for manual ON/OFF
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  int ldrValue   = analogRead(ldrPin);   // 0-1023
+  int pirState   = digitalRead(pirPin);  // HIGH if motion
+  int modeState  = digitalRead(modeSwitch);   // LOW=Manual, HIGH=Auto
+  int manualState= digitalRead(manualSwitch); // LOW=ON, HIGH=OFF
+
+  // ---------- MANUAL MODE ----------
+  if (modeState == LOW) {
+    if (manualState == LOW) {
+      digitalWrite(lightPin, HIGH);   // Manual ON
+      Serial.println("Mode: MANUAL ? Light ON");
+    } else {
+      digitalWrite(lightPin, LOW);    // Manual OFF
+      Serial.println("Mode: MANUAL ? Light OFF");
+    }
+  } 
+  // ---------- AUTOMATIC MODE ----------
+  else {
+    // Threshold for sunlight detection (adjust as per your LDR values)
+    bool dark = (ldrValue < 300);   // dark if <300
+    bool motion = (pirState == HIGH);
+
+    if (dark && motion) {
+      digitalWrite(lightPin, HIGH);   // Light ON
+      Serial.println("Mode: AUTO ? Dark + Person ? Light ON");
+    } else {
+      digitalWrite(lightPin, LOW);    // Light OFF
+      Serial.println("Mode: AUTO ? Other condition ? Light OFF");
+    }
+  }
+
+  delay(500);
+}
+
+
 ## CIRCUIT DIAGRAM:
 
+<img width="1221" height="820" alt="Screenshot 2025-08-25 113548" src="https://github.com/user-attachments/assets/971ca72c-036a-44a2-a46a-15e30fe1f898" />
+
+
 ## OUTPUT:
+
+<img width="1745" height="876" alt="Screenshot 2025-08-25 105802" src="https://github.com/user-attachments/assets/2a8c087b-c389-4fe0-af8f-cbcd209f8dc4" />
+
 
 ## RESULT:
 Thus the automatic light controller was designed and simulated using LDR and Arduino UNO controller.
