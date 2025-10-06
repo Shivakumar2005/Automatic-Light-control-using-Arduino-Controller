@@ -63,7 +63,7 @@ LDR Features of LDR are as follows:
 
 
 ## PROGRAM:
-
+```
 int ldrPin     = A0;   // LDR sensor input
 int pirPin     = 2;    // PIR sensor input
 int lightPin   = 13;   // Relay or LED output
@@ -114,7 +114,7 @@ void loop() {
 
   delay(500);
 }
-
+```
 
 ## CIRCUIT DIAGRAM:
 
